@@ -1,6 +1,9 @@
 package com.springframework.recipeapp.domain;
 
+import com.springframework.recipeapp.services.RecipeService;
+
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -15,10 +18,12 @@ public class Recipe {
     private Integer servings;
     private String source;
     private String url;
+
+    @Lob
     private String direction;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
-    private Set<Ingredient> ingredients;
+    private Set<Ingredient> ingredients = new HashSet<>();
 
     @Lob
     private Byte[] image;
@@ -33,7 +38,7 @@ public class Recipe {
     @JoinTable( name = "recipe_category",
         joinColumns = @JoinColumn(name = "recipe_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private Set<Category> category;
+    private Set<Category> category = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -113,6 +118,7 @@ public class Recipe {
 
     public void setNotes(Notes notes) {
         this.notes = notes;
+        notes.setRecipe(this);
     }
 
     public Set<Ingredient> getIngredients() {
@@ -137,5 +143,11 @@ public class Recipe {
 
     public void setCategory(Set<Category> category) {
         this.category = category;
+    }
+
+    public Recipe addIngredients(Ingredient ingredients){
+        this.ingredients.add(ingredients);
+        ingredients.setRecipe(this);
+        return this;
     }
 }
