@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -28,13 +29,44 @@ public class RecipeServiceImplTest {
 
     @Test
     public void getRecipe() {
-        Recipe recipe= new Recipe();
-        HashSet recipeData = new HashSet();
-        recipeData.add(recipe);
+        Recipe recipe = new Recipe();
+        recipe.setId(1L);
+        Optional<Recipe> recipeOptional = Optional.of(recipe);
 
-        when(recipeRepository.findAll()).thenReturn(recipeData);
+        when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
+
+        Recipe recipeReturned = recipeService.findById(1L);
+
+        assertNotNull("Null recipe returned", recipeReturned);
+        verify(recipeRepository, times(1)).findById(anyLong());
+        verify(recipeRepository, never()).findAll();
+    }
+
+    @Test
+    public void getRecipeTest() {
+
+        Recipe recipe = new Recipe();
+        HashSet receipesData = new HashSet();
+        receipesData.add(recipe);
+
+        when(recipeService.getRecipe()).thenReturn(receipesData);
+
         Set<Recipe> recipes = recipeService.getRecipe();
-        assertEquals(recipes.size(),1);
-        verify(recipeRepository,times(1)).findAll();
+
+        assertEquals(recipes.size(), 1);
+        verify(recipeRepository, times(1)).findAll();
+        verify(recipeRepository, never()).findById(anyLong());
+    }
+
+    @Test
+    public void testGetRecipe() {
+    }
+
+    @Test
+    public void findById() {
+    }
+
+    @Test
+    public void deleteById() {
     }
 }

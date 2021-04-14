@@ -6,4 +6,8 @@ import java.util.Set;
 
 public interface RecipeService {
     Set<Recipe> getRecipe();
+
+    Recipe findById(Long l);
+
+    void deleteById(Long idToDelete);
 }
